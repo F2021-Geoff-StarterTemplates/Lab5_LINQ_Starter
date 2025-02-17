@@ -1,4 +1,5 @@
 ﻿using Lab5_LINQ.Data;
+using Lab5_LINQ_Starter.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 using System.Data;
@@ -16,29 +17,28 @@ public partial class App : Application
         using (var context = new NorthwindContext())
         {
             //Load all DbSets
-            context.Products.Load();
-            context.Categories.Load();
-            context.Suppliers.Load();
+            context.Products.Include(p => p.Category)
+                            .Include(p => p.Supplier)
+                            .Load();
+            context.Categories.Include(c => c.Products).Load();
+            ////context.Suppliers.Include(s => s.Products).Load();
+            //context.Products.Include(p => p.Category).Load();
+            //context.Products.Include(p => p.Supplier).Load();
 
             // Cast all loaded data as collections
-            var products = context.Products.Local.ToObservableCollection();
+            //var products = context.Products.Local.ToObservableCollection();
             var categories = context.Categories.Local.ToObservableCollection();
-            var suppliers = context.Suppliers.Local.ToObservableCollection();
+            //var suppliers = context.Suppliers.Local.ToObservableCollection();
 
             // Instantiate a new MainWindow and pass it all the loaded data
             // (Could also pass to other parts of the application, ie. usercontrol, page, etc.)
-            
+
             var mainWindow = new MainWindow
             {
-                DataContext = new
-                {
-                    Products = products,
-                    Categories = categories,
-                    Suppliers = suppliers
-                }
+                DataContext = new MainViewModel(categories)
             };
             //Show the mainwindow object to the user.
-            //To avoid double windows, be sure to remove the StarupUri attribute in App.xaml
+            //To avoid double windows, be sure to remove the StartupUri attribute in App.xaml
             mainWindow.Show();
         }
     }

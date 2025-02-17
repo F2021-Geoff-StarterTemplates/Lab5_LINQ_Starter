@@ -5,6 +5,13 @@
               Startup="Application_Startup">
             <!--StartupUri="MainWindow.xaml" REMOVED to avoid double windows. --> 
     <Application.Resources>
-         
+        <Style x:Key="detailsStackPanelStyle" TargetType="StackPanel">
+            <Setter Property="Margin" Value="5"></Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SelectedProduct}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Application.Resources>
 </Application>
